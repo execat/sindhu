@@ -40,11 +40,11 @@ The basic principle of sandhi is that two vowels should not be next to each othe
 | ॠ                                 | RRI/R^I |
 | ऌ                                 | LLi/L^i |
 | ॡ                                 | LLI/L^I |
-| अं(added as anusvāra)             | .m/N/.m |
-| अः                                | H       |
-| अँ                                | .N      |
-| ्(virāma/halant)                  | .h      |
-| ऽ(avagraha:elision during sandhi) | .a      |
+| अं (added as anusvāra)             | .m/N/.m |
+| अः                                 | H       |
+| अँ                                 | .N      |
+| ् (virāma/halant)                  | .h      |
+| ऽ (avagraha:elision during sandhi) | .a     |
 | Om symbol                         | OM,AUM  |
 
 The Devanāgarī consonant letters include an implicit 'a' sound. In all of the transliteration systems, that 'a' sound must be represented explicitly.
@@ -85,14 +85,14 @@ The Devanāgarī consonant letters include an implicit 'a' sound. In all of the 
 | स          | sa     |
 | ह          | ha     |
 
-| Devanāgarī | ITRANS      |
+| Devanāgarī | ITRANS     |
 |-----------|-------------|
 | क्ष        | kSa/kSha/xa |
 | त्र        | tra         |
 | ज्ञ        | GYa/j~na    |
 | श्र        | shra        |
 
-| Devanāgarī | ITRANS   |
+| Devanāgarī | ITRANS  |
 |-----------|----------|
 | क़         | qa       |
 | ख़         | Kha      |
