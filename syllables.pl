@@ -7,6 +7,8 @@ vowel("a"). vowel("ā"). vowel("i"). vowel("ī"). vowel("u"). vowel("ū").
 vowel("ṛ"). vowel("ṝ"). vowel("ḷ"). vowel("ḹ"). vowel("e"). vowel("ai").
 vowel("o"). vowel("au").
 
+vowel("ḥ"). vowel("ṃ"). vowel("'").
+
 %% Establish relation between long and short vowels
 long("a", "ā").
 long("i", "ī").
@@ -20,6 +22,10 @@ long("o", "au").
 strong("i", "e"). strong("ī", "e"). strong("e", "ai").
 strong("u", "o"). strong("ū", "o"). strong("o", "au").
 strong("r", "ar"). strong("ṝ", "ar"). strong("ar", "ār").
+
+strong("ai", "ai").
+strong("au", "au").
+strong("ār", "ār").
 
 %%
 %% Varga definitions
@@ -92,18 +98,27 @@ compound_consonant(X, Y, Ans):-
 %% Sandhi rules
 %%
 
+%%
+%% Rule 1
+%%
+
 % Similar vowels rule
-% Example:
+% Examples:
 % sandhi(["bha", "va"], ["a", "r", "ju", "na"], Ans).
-% ["bha", "vā", "r", "ju", "na"]
+%   Ans = ["bha", "vā", "r", "ju", "na"] .
+% sandhi(["da", "g", "dha"], ["a", "ra", "ṇ", "ya"], Ans).
+%   Ans = ["da", "g", "dhā", "ra", "ṇ", "ya"] .
+% sandhi(["su"], ["u", "kta"], Ans).
+%   Ans = ["sū", "kta"] .
 sandhi(Xs, Ys, Ans):-
     % Split
-    split(Xs, Xs_first, Xs_rest, Xs_last),
-    split(Ys, Ys_first, Ys_rest, Ys_last),
+    split_tail(Xs, Xs_body, Xs_tail),
+    split_head(Ys, Ys_head, Ys_rest),
+
     % Test
     % Condition: similar vowels while combining
-    Xs_last = [Xs_last_string],
-    Ys_first = [Ys_first_string],
+    Xs_tail = [Xs_last_string],
+    Ys_head = [Ys_first_string],
     decompose(Sx_syllable, Sx_vowel, Xs_last_string),
     decompose(Sy_syllable, Sy_vowel, Ys_first_string),
     Sx_vowel == Sy_vowel,
@@ -114,10 +129,51 @@ sandhi(Xs, Ys, Ans):-
     string_concat(Sx_syllable, S_combine, S_Ans),
     S_combine_word = [S_Ans],
 
-    append(Xs_first, Xs_rest, Ans_1),
-    append(Ys_rest, Ys_last, Ans_3),
-    append(Ans_1, S_combine_word, Ans_2),
-    append(Ans_2, Ans_3, Ans).
+    % Get part 1
+    append(Xs_body, S_combine_word, Ans_1),
+    % Combine part 1 with rest of the word
+    append(Ans_1, Ys_rest, Ans).
+
+%%
+%% Rule 2
+%%
+
+% Dissimilar vowels rule
+% Examples:
+% sandhi(["rā", "ja"], ["i", "n", "dr", "aḥ"], Ans).
+%   Ans = ["rā", "je", "n", "dr", "aḥ"] .
+% sandhi(["hi", "ta"], ["u", "pa", "de", "ś", "aḥ"], Ans).
+%   Ans = ["hi", "to", "pa", "de", "ś", "aḥ"] .
+% sandhi(["ta", "s", "ya"], ["au", "dā", "r", "ya", "m"], Ans).
+%   Ans = ["ta", "s", "yau", "dā", "r", "ya", "m"] ;
+% Failure: mahā ṛṣiḥ → maharṣiḥ (महा ऋषिः → महर्षिः)
+sandhi(Xs, Ys, Ans):-
+    % Split
+    split_tail(Xs, Xs_body, Xs_tail),
+    split_head(Ys, Ys_head, Ys_rest),
+
+    % Test
+    % Condition: dissimilar vowels while combining
+    Xs_tail = [Xs_last_string],
+    Ys_head = [Ys_first_string],
+    decompose(Sx_syllable, Sx_vowel, Xs_last_string),
+    decompose(Sy_syllable, Sy_vowel, Ys_first_string),
+    member(Sx_vowel, ["a", "ā"]),
+    Sy_syllable == "",
+
+    % Combine
+    strong(Sy_vowel, S_combine),
+    string_concat(Sx_syllable, S_combine, S_Ans),
+    S_combine_word = [S_Ans],
+
+    % Get part 1
+    append(Xs_body, S_combine_word, Ans_1),
+    % Combine part 1 with rest of the word of word 2
+    append(Ans_1, Ys_rest, Ans).
+
+%%
+%% Utilities
+%%
 
 %% Decompose helper
 decompose(Syllable, Vowel, Ans):-
@@ -125,11 +181,12 @@ decompose(Syllable, Vowel, Ans):-
     vowel(Vowel),
     string_concat(Syllable, Vowel, Ans).
 
-%% Split helper
-split(Xs, Xs_first, Xs_rest, Xs_last):-
-    append(Xs_1, Xs_last, Xs),
-    length(Xs_last, 1),
-    append(Xs_first, Xs_rest, Xs_1).
-    % With this, you can solve "bhava + arjuna" to get solution once
-    % But not get solution for "su + ukta"
-    % length(Xs_first, 1).
+%% Gets first element
+split_head(Xs, Xs_first, Xs_rest):-
+    append(Xs_first, Xs_rest, Xs),
+    length(Xs_first, 1).
+
+%% Gets last element
+split_tail(Xs, Xs_body, Xs_tail):-
+    append(Xs_body, Xs_tail, Xs),
+    length(Xs_tail, 1).

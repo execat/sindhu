@@ -31,3 +31,5 @@ The basic principle of sandhi is that two vowels should not be next to each othe
 | अं         | ṃ              |
 | अः         | ḥ              |
 | अऽ         | '             |
+
+
