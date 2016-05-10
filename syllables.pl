@@ -7,8 +7,10 @@ vowel("a"). vowel("ā"). vowel("i"). vowel("ī"). vowel("u"). vowel("ū").
 vowel("ṛ"). vowel("ṝ"). vowel("ḷ"). vowel("ḹ"). vowel("e"). vowel("ai").
 vowel("o"). vowel("au").
 
-% Are these not vowels?
+% These can combine only with vowels
 % vowel("ḥ"). vowel("ṃ"). vowel("'").
+
+%% <== http://learnsanskrit.org/sounds/review
 
 %% Establish relation between long and short vowels
 long("a", "ā").
@@ -19,14 +21,20 @@ long("ḷ", "ḹ").
 long("e", "ai").
 long("o", "au").
 
-%% Strength heirarchy of vowels
-strong("i", "e"). strong("ī", "e"). strong("e", "ai").
-strong("u", "o"). strong("ū", "o"). strong("o", "au").
-strong("r", "ar"). strong("ṝ", "ar"). strong("ar", "ār").
+%% Establish relation between vowels and semivowels
 
-strong("ai", "ai").
-strong("au", "au").
-strong("ār", "ār").
+%% Strength heirarchy of vowels
+strong("a", "ā"). strong("ā", "ā").
+strong("i", "e"). strong("ī", "e"). strong("e", "ai"). strong("ai", "ai").
+strong("u", "o"). strong("ū", "o"). strong("o", "au"). strong("au", "au").
+strong("r", "ar"). strong("ṝ", "ar"). strong("ar", "ār"). strong("ār", "ār").
+
+%% Semivowel mapping
+semivowel("i", "y"). semivowel("ī", "y"). semivowel("e", "y"). semivowel("ai", "y").
+semivowel("ṛ", "r"). semivowel("ṝ", "r"). semivowel("ar", "r"). semivowel("ār", "r").
+semivowel("u", "v"). semivowel("ū", "v"). semivowel("o", "v"). semivowel("au", "v").
+
+% ==>
 
 %%
 %% Varga definitions
@@ -42,12 +50,15 @@ cavarga("c"). cavarga("ch"). cavarga("j"). cavarga("jh"). cavarga("ñ").
 tavarga("t"). tavarga("th"). tavarga("d"). tavarga("dh"). tavarga("n").
 %% pa-varga
 pavarga("p"). pavarga("ph"). pavarga("b"). pavarga("bh"). pavarga("m").
-%% semivowels
+%% ya-varga
 semivowel("y"). semivowel("r"). semivowel("l"). semivowel("v").
-%% s-sounds
+yavarga(X):- semivowel(X).
+%% śa-varga
 s_sound("ś"). s_sound("ṣ"). s_sound("s").
-%% h-sounds
 h_sound("h").
+śavarga(X):- s_sound(X).
+śavarga(X):- h_sound(X).
+
 %% no sound
 no_sound("").
 
@@ -76,13 +87,13 @@ syllable(cavarga, X):- cavarga(X).
 syllable(ṭavarga, X):- ṭavarga(X).
 syllable(tavarga, X):- tavarga(X).
 syllable(pavarga, X):- pavarga(X).
-syllable(semivowel, X):- semivowel(X).
-syllable(s_sound, X):- s_sound(X).
-syllable(h_sound, X):- h_sound(X).
+syllable(yavarga, X):- yavarga(X).
+syllable(śavarga, X):- śavarga(X).
 syllable(no_sound, X):- no_sound(X).
 
 %%
 %% Consonant forming rules
+%% These two are not used anywhere and probably need to get better
 %%
 
 %% consonant/2 :: A consonant is a syllable with "a" (full sound)
@@ -171,6 +182,40 @@ sandhi(Xs, Ys, Ans):-
     append(Xs_body, S_combine_word, Ans_1),
     % Combine part 1 with rest of the word of word 2
     append(Ans_1, Ys_rest, Ans).
+
+%%
+%% Rule 3
+%%
+
+% Change the first vowel to semivowel
+% Examples
+% sandhi(["i", "ti"], ["ā", "ha"], Ans).
+%   Ans = ["i", "ty", "ā", "ha"] .
+% sandhi(["a", "pi"], ["a", "sya"], Ans).
+%   Ans = ["a", "py", "a", "sya"] .
+% sandhi(["ma", "dhu"], ["i", "va"], Ans).
+%   Ans = ["ma", "dhv", "i", "va"] .
+sandhi(Xs, Ys, Ans):-
+    % Split
+    split_tail(Xs, Xs_body, Xs_tail),
+
+    % Test
+    % Condition: dissimilar vowels while combining
+    Xs_tail = [Xs_last_string],
+    decompose(Sx_syllable, Sx_vowel, Xs_last_string),
+    not(member(Sx_vowel, ["a", "ā"])),
+
+    % Combine
+    semivowel(Sx_vowel, S_combine),
+    string_concat(Sx_syllable, S_combine, S_Ans),
+    S_combine_word = [S_Ans],
+
+    % Get part 1
+    append(Xs_body, S_combine_word, Ans_1),
+    % Combine part 1 with rest of the word of word 2
+    append(Ans_1, Ys, Ans).
+
+
 
 %%
 %% Utilities
