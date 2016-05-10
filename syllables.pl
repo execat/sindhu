@@ -7,7 +7,8 @@ vowel("a"). vowel("ā"). vowel("i"). vowel("ī"). vowel("u"). vowel("ū").
 vowel("ṛ"). vowel("ṝ"). vowel("ḷ"). vowel("ḹ"). vowel("e"). vowel("ai").
 vowel("o"). vowel("au").
 
-vowel("ḥ"). vowel("ṃ"). vowel("'").
+% Are these not vowels?
+% vowel("ḥ"). vowel("ṃ"). vowel("'").
 
 %% Establish relation between long and short vowels
 long("a", "ā").
