@@ -1,7 +1,19 @@
+%%
 %% Vowels
+%%
+
 vowel("a"). vowel("ā"). vowel("i"). vowel("ī"). vowel("u"). vowel("ū").
 vowel("ṛ"). vowel("ṝ"). vowel("ḷ"). vowel("ḹ"). vowel("e"). vowel("ai").
 vowel("o"). vowel("au").
+
+%% Strength heirarchy of vowels
+strong("i", "e"). strong("ī", "e"). strong("e", "ai").
+strong("u", "o"). strong("ū", "o"). strong("o", "au").
+strong("r", "ar"). strong("ṝ", "ar"). strong("ar", "ār").
+
+%%
+%% Varga definitions
+%%
 
 %% ka-varga
 kavarga("k"). kavarga("kh"). kavarga("g"). kavarga("gh"). kavarga("ṅ").
@@ -24,6 +36,10 @@ h_sound("h").
 terminal(kavarga, "ṅ"). terminal(cavarga, "ñ"). terminal(ṭavarga, "ṇ").
 terminal(tavarga, "n"). terminal(pavarga, "m").
 
+%%
+%% Syllable forming rules
+%%
+
 %% syllable/1 :: A syllable is any of the above consonant sounds
 syllable(X):- kavarga(X).
 syllable(X):- cavarga(X).
@@ -44,6 +60,10 @@ syllable(semivowel, X):- semivowel(X).
 syllable(s_sound, X):- s_sound(X).
 syllable(h_sound, X):- h_sound(X).
 
+%%
+%% Consonant forming rules
+%%
+
 %% consonant/2 :: A consonant is a syllable with "a" (full sound)
 consonant(X, Ans):-
     syllable(X),
@@ -55,3 +75,7 @@ compound_consonant(X, Y, Ans):-
     terminal(Varga, Y), X \== Y,
     string_concat(Y, "a", Complete_Y),
     string_concat(X, Complete_Y, Ans).
+
+%%
+%% Sandhi rules
+%%
