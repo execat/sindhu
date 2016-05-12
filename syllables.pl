@@ -144,7 +144,8 @@ sandhi(Xs, Ys, Ans):-
     % Get part 1
     append(Xs_body, S_combine_word, Ans_1),
     % Combine part 1 with rest of the word
-    append(Ans_1, Ys_rest, Ans).
+    append(Ans_1, Ys_rest, Ans),
+    print("Rule 1").
 
 %%
 %% Rule 2
@@ -181,7 +182,8 @@ sandhi(Xs, Ys, Ans):-
     % Get part 1
     append(Xs_body, S_combine_word, Ans_1),
     % Combine part 1 with rest of the word of word 2
-    append(Ans_1, Ys_rest, Ans).
+    append(Ans_1, Ys_rest, Ans),
+    print("Rule 2").
 
 %%
 %% Rule 3
@@ -213,7 +215,44 @@ sandhi(Xs, Ys, Ans):-
     % Get part 1
     append(Xs_body, S_combine_word, Ans_1),
     % Combine part 1 with rest of the word of word 2
-    append(Ans_1, Ys, Ans).
+    append(Ans_1, Ys, Ans),
+    print("Rule 3").
+
+%%
+%% Rule 4
+%%
+
+simple_vowel_rule("i", "iy").
+simple_vowel_rule("ī", "iy").
+simple_vowel_rule("u", "uv").
+simple_vowel_rule("ū", "uv").
+simple_vowel_rule("ṝ", "ir").
+
+% Change the both the vowels
+% Examples
+% sandhi(["dhī"], ["i"], Ans).
+% sandhi(["bhū"], ["i"], Ans).
+% sandhi(["gṝ"], ["a"], Ans), sandhi(Ans, "ti", Ans_final).
+sandhi(Xs, Ys, Ans):-
+    % Split
+    split_tail(Xs, Xs_body, Xs_tail),
+
+    % Test
+    % Condition: dissimilar vowels while combining
+    Xs_tail = [Xs_last_string],
+    decompose(Sx_syllable, Sx_vowel, Xs_last_string),
+    member(Sx_vowel, ["i", "ī", "u", "ū", "ṝ"]),
+
+    % Combine
+    simple_vowel_rule(Sx_vowel, S_combine),
+    string_concat(Sx_syllable, S_combine, S_Ans),
+    S_combine_word = [S_Ans],
+
+    % Get part 1
+    append(Xs_body, S_combine_word, Ans_1),
+    % Combine part 1 with rest of the word of word 2
+    append(Ans_1, Ys, Ans),
+    print("Rule 4").
 
 
 
