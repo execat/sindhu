@@ -205,6 +205,7 @@ sandhi(Xs, Ys, Ans):-
     % Condition: dissimilar vowels while combining
     Xs_tail = [Xs_last_string],
     decompose(Sx_syllable, Sx_vowel, Xs_last_string),
+    % Change this to member
     not(member(Sx_vowel, ["a", "ā"])),
 
     % Combine
@@ -231,7 +232,11 @@ simple_vowel_rule("ṝ", "ir").
 % Change the both the vowels
 % Examples
 % sandhi(["dhī"], ["i"], Ans).
+%   Ans = ["dhy", "i"] ;
+%   Ans = ["dhiy", "i"] .
 % sandhi(["bhū"], ["i"], Ans).
+%   Ans = ["bhv", "i"] ;
+%   Ans = ["bhuv", "i"] ;
 % sandhi(["gṝ"], ["a"], Ans), sandhi(Ans, "ti", Ans_final).
 sandhi(Xs, Ys, Ans):-
     % Split
@@ -254,7 +259,51 @@ sandhi(Xs, Ys, Ans):-
     append(Ans_1, Ys, Ans),
     print("Rule 4").
 
-
+% sandhi(["vi", "d", "yā"], ["ā", "la", "ya", "ḥ"], Ans).
+% sandhi(["na", "ma", "si"], ["ī", "ś", "va", "ra", "m"], Ans). FAILS
+% sandhi(["bhā", "nu"], ["u", "da", "ya", "ḥ"], Ans). TWO WRONG ANSWERS
+% sandhi(["pi", "tṛ"], ["ṝ", "ṇa", "m"], Ans). FAILS
+%
+% sandhi(["u", "pa"], ["i", "n", "dra", "ḥ"], Ans).
+% sandhi(["sū", "r", "ya"], ["u", "dayaḥ"], Ans).
+% sandhi(["g", "rī", "ṣ", "ma"], ["ṛ", "tu", "ḥ"], Ans). FAILS
+% sandhi(["ta", "va"], ["ḷ", "va", "r", "ṇa", "ḥ"], Ans).
+%
+% kṛṣṇa + ekatvam = kṛṣṇaikatvam
+% bhava + oṣadham = bhavauṣadham
+% bhoga + aiśvaryam = bhogaiśvaryam
+% paśyatha + augham = paśyathaugham
+%
+% ati + utratam = atyutratam
+% madhu + etat = madhvetat
+% pitṛ + ājñā = pitrājñā
+% ḷ + ākṝtiḥ = lākṝtiḥ
+%
+% ati + utratam = atyutratam
+% madhu + etat = madhvetat
+% pitṛ + ājñā = pitrājñā
+% ḷ + ākṝtiḥ = lākṝtiḥ
+%
+%
+% te + āsan = tayāsan or ta āsan
+% te + iha = tayiha or ta iha
+%
+% prabho + ehi = prabhavehi or prabha ehi
+% munaye + anna = munaye'nna
+% prabho + adhunā = prabho'dhunā
+%
+% tasmai + adāt = tasmāyadāt or tasmā adāt
+% tasmai + uttam = tasmāyuttam or tasmā uttam
+%
+% tau + iha = tāviha or tā iha
+% tau + eva = tāveva or tā eva
+%
+% hari + etau = hari etau
+% viṣṇū + emau = viṣṇū emau
+% gaṅge + amū = gaṅge amū
+%
+% brahmā + ṛṣiḥ = brahmārṣi or brahmā ṛṣiḥ
+% sapta + ṛṣīṇām = saptarṣīṇām or sapta ṛṣīṇām
 
 %%
 %% Utilities
