@@ -126,6 +126,27 @@ resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
 %% [, ḷ], [ā, kṛti], [l, ākṛti, lākṛtiḥ]
 %% [, ḷ], [a, kāra], [l, akāraḥ, ]
 
+yan(X, Y):- member(X, [i, ī]), Y = y.
+yan(X, Y):- member(X, [u, ū]), Y = v.
+yan(X, Y):- member(X, [ṛ, ṝ]), Y = r.
+yan(ḷ, l).
+
+resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
+    % Validate
+    validate(X_body, X_last, Y_head, Y_rest),
+
+    % Check if the first is [i, ī, u, ū, ṛ, ṝ, ḷ]
+    member(X_last, [i, ī, u, ū, ṛ, ṝ, ḷ]),
+    % Check if the second is one of [a, ā]
+    member(Y_head, [a, ā]),
+    % Find the yaṇ
+    yan(Y_head, Yan),
+
+    append([X_body], [Yan], T1),
+    append(T1, [Y_rest], XY),
+    % Set type
+    Type = 'yaṇ'.
+
 %% [har, e], [e, ], [har, ay, e]
 %% [kav, e], [e, ], [kav, ay, e]
 %% [na, i], [a, kaḥ], [n, āy, akaḥ]
@@ -136,12 +157,53 @@ resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
 %% [ga, u], [a, u], [g, āv, au]
 %% [na, u], [a, m], [n, āv, am]
 
+ayadi(e, ay).
+ayadi(ai, āy).
+ayadi(o, av).
+ayadi(au, āv).
+
+resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
+    % Validate
+    validate(X_body, X_last, Y_head, Y_rest),
+
+    % Check if the first is a or ā
+    member(X_last, [e, ai, o, au]),
+    % Check if the second is a vowel
+    vowel(Y_head),
+    % Find the ayādi
+    ayadi(Y_head, Ayadi),
+
+    append([X_body], [Ayadi], T1),
+    append(T1, [Y_rest], XY),
+    % Set type
+    Type = 'ayādi'.
+
 %% [grām, e], [a, smin], [grām, e', smin]
 %% [nagar, e], [a, tra], [nagar, e', tra]
 %% [sādh, o], [a, tra],  [sādh, o', tra]
 %% [prabh, o], [a, tra], [prabh, o', tra]
 %% [har, e], [a, va],  [har, e', va]
 %% [viṣṇ, o], [a, va], [viṣṇ, o, 'va]
+
+purvarupa(e, "e'").
+purvarupa(o, "o'").
+
+resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
+    % Validate
+    validate(X_body, X_last, Y_head, Y_rest),
+
+    % Check if the first is e or o
+    member(X_last, [e, o]),
+    % Check if the second is [a]
+    member(Y_head, [a]),
+    % Find the pūrvarupa
+    purvarupa(X_last, Purvarupa),
+
+    append([X_body], [Purvarupa], T1),
+    append(T1, [Y_rest], XY),
+    % Set type
+    Type = 'pūrvarupa'.
+
 
 % Disable validate
 validate(_, _, _, _).
