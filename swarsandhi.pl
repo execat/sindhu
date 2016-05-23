@@ -17,11 +17,6 @@ similar_vowel(X, Y):- longify_vowel(X, Y).
 similar_vowel(X, Y):- longify_vowel(Y, X).
 similar_vowel(X, X).
 
-guna(i, e).
-guna(u, o).
-guna(ṛ, ar).
-guna(ḷ, al).
-
 longest_vowel(X, Y, Longest):-
     longify_vowel(X, Longest),
     longify_vowel(Y, Longest).
@@ -61,14 +56,19 @@ resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
 %% [kṛṣṇ, a], [ṛ, ddhiḥ], [kṛṣṇ, ar, ddhiḥ]
 %% [mah, ā], [ṛ, ṣiḥ], [mah, ar, ṣiḥ]
 %% [tav, a], [ḷ, kāraḥ], [tav, al, kāraḥ]
-%% [māl, ā], [lṛ, kāraḥ], [māl, al, kāraḥ]
+%% [māl, ā], [ḷ, kāraḥ], [māl, al, kāraḥ]
+
+guna(i, e).
+guna(u, o).
+guna(ṛ, ar).
+guna(ḷ, al).
 
 resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
     % Validate
     validate(X_body, X_last, Y_head, Y_rest),
     % Check if the first is a or ā
     member(X_last, [a, ā]),
-    % Check if the second is any of the rest
+    % Check if the second is one of [i, ī, u, ū, ṛ, ṝ, ḷ]
     member(Y_head, [i, ī, u, ū, ṛ, ṝ, ḷ]),
     % Find the guṇa
     guna(Y_head, Guna),
@@ -78,6 +78,71 @@ resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
     % Set type
     Type = 'guṇa'.
 
+%% [kṛṣṇ, a], [e, katvam], [kṛṣṇ, ai, katvam]
+%% [dev, a], [a, iśvaryam], [dev, ai, śvaryam]
+%% [tath, ā], [e, va], [tath, ai, va]
+%% [mah, ā], [a, irāvataḥ], [mah, ai, rāvataḥ]
+%% [jal, a], [o, ghaḥ], [jal, au, ghaḥ]
+%% [tav, a], [a, udāryam], [tav, au, dāryam]
+%% [mah, ā], [o, ghaḥ], [mah, au, ghaḥ]
+%% [mah, ā], [a, udāryam], [mah, au, dāryam]
+%% [pr, a], [ṛ, cchati], [pr, ār, cchati]
+%% [up, a], [ṛ, cchati], [up, ār, cchati]
+
+vruddhi(e, ai).
+vruddhi(ai, ai).
+vruddhi(o, au).
+vruddhi(au, au).
+vruddhi(ṛ, ār).
+vruddhi(ḷ, āl).
+
+resolve(X_body, X_last, Y_head, Y_rest, XY, Type):-
+    % Validate
+    validate(X_body, X_last, Y_head, Y_rest),
+
+    % Check if the first is a or ā
+    member(X_last, [a, ā]),
+    % Check if the second is one of [e, ai, o, au, ṛ, ḷ]
+    member(Y_head, [e, ai, o, au, ṛ, ḷ]),
+    % Find the vṛddhi
+    vruddhi(Y_head, Vruddhi),
+
+    append([X_body], [Vruddhi], T1),
+    append(T1, [Y_rest], XY),
+    % Set type
+    Type = 'vṛddhi'.
+
+%% [yad, i], [a, pi], [yad, y, api]
+%% [it, i], [ā, di], [it, y, ādiḥ]
+%% [nad, ī], [a, sti], [nad, y, asti]
+%% [lakṣm, ī], [ā, gacchati], [lakṣm, y, āgacchati]
+%% [madh, u], [a, riḥ], [madh, v, ariḥ]
+%% [sādh, u], [ā, deśaḥ], [sādh, v, ādeśa]
+%% [s, u], [ā, gatama], [s, v, āgatam]
+%% [vadh, ū], [ā, deśaḥ], [vadh, v, ādeśaḥ]
+%% [cam, ū], [ā, gamanama], [cam, v, āgamanam]
+%% [pit, ṛ], [ā, deśaḥ], [pit, r, ādeśaḥ]
+%% [māt, ṛ], [ā, jñā], [māt, r, ājñā]
+%% [, ḷ], [ā, kṛti], [l, ākṛti, lākṛtiḥ]
+%% [, ḷ], [a, kāra], [l, akāraḥ, ]
+
+%% [har, e], [e, ], [har, ay, e]
+%% [kav, e], [e, ], [kav, ay, e]
+%% [na, i], [a, kaḥ], [n, āy, akaḥ]
+%% [ra, i], [o, ḥ], [r, āy, oḥ]
+%% [viṣṇ, o], [e, ], [viṣṇ, av, e]
+%% [bhān, o], [e, ], [bhān, av, e]
+%% [pa, u], [a, kaḥ], [p, āv, akaḥ]
+%% [ga, u], [a, u], [g, āv, au]
+%% [na, u], [a, m], [n, āv, am]
+
+%% [grām, e], [a, smin], [grām, e', smin]
+%% [nagar, e], [a, tra], [nagar, e', tra]
+%% [sādh, o], [a, tra],  [sādh, o', tra]
+%% [prabh, o], [a, tra], [prabh, o', tra]
+%% [har, e], [a, va],  [har, e', va]
+%% [viṣṇ, o], [a, va], [viṣṇ, o, 'va]
+
 % Disable validate
 validate(_, _, _, _).
 
@@ -86,6 +151,6 @@ validate(X_body, X_last, Y_head, Y_rest):-
     % Make sure the words are in the dictionary
     atom_concat(X_body, X_last, X), dictionary(X),
     atom_concat(Y_head, Y_rest, Y), dictionary(Y).
-dictionary(X):- fail.
+dictionary(_):- fail.
 
 % Use atomic_list_concat(Result, X) to get the final answer
