@@ -40,3 +40,7 @@
 
 * [Columbia](http://www.columbia.edu/cu/mesaas/languages/sanskrit/resources.html)
 
+## Regional resources
+
+* [Wikipedia: Hindi: Sandhi](https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A4%82%E0%A4%A7%E0%A4%BF_(%E0%A4%B5%E0%A5%8D%E0%A4%AF%E0%A4%BE%E0%A4%95%E0%A4%B0%E0%A4%A3))
+* [Sandhi rules in Marathi](https://marathi22.blogspot.com/2015/06/swarsandhi-niyam.html)
